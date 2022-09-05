@@ -1,62 +1,86 @@
-function compra() {
-  let total = 0;
-  let cursoAcomprar = prompt(
-    "Elige que deseas adquirir de nuestra tienda: G-Curso de guitarra, B-Curso de bajo, T-Curso de teclado"
-  );
-  let continuarLaCompra = true;
-  let decision;
-
-  while (continuarLaCompra === true) {
-    if (cursoAcomprar === null) {
-      return;
-    } else if (cursoAcomprar === "G") {
-      total = total + 6000;
-    } else if (cursoAcomprar === "B") {
-      total = total + 7500;
-    } else if (cursoAcomprar === "T") {
-      total = total + 5500;
-    } else {
-      alert("Por favor, elige uno de nuestros cursos disponibles");
-      cursoAcomprar = prompt(
-        "Elige que deseas adquirir de nuestra tienda: G-Curso de guitarra, B-Curso de bajo, T-Curso de teclado"
-      );
-      continue;
+class Producto {
+    constructor(nombre, precio, id){
+        this.nombre = nombre;
+        this.precio = precio; 
+        this.id = id;   
     }
-
-    decision = parseInt(
-      prompt("Algún curso mas que desees agregar? 1.Si - 2.No")
-    );
-    if (decision === 1) {
-      cursoAcomprar = prompt(
-        "Elige que deseas adquirir de nuestra tienda: G-Curso de guitarra, B-Curso de bajo, T-Curso de teclado"
-      );
-    } else if (decision === 2) {
-      continuarLaCompra = false;
-    }
-  }
-
-  alert("El valor total de tu compra (SIN IVA) es de " + total);
-
-  let valorTotalConIVA = precioConIVA(total);
-  alert("El valor total de tu compra con IVA es de " + valorTotalConIVA);
-
-  let cuotas = parseInt(prompt("En cuantas cuotas deseas pagar? Puede ser entre 1 y 6 cuotas"))
-  while(cuotas <1 || cuotas >6){
-    cuotas = parseInt(prompt("En cuantas cuotas deseas pagar? Puede ser entre 1 y 6 cuotas"))
-  }
-  let valorCuota = precioCuota(valorTotalConIVA, cuotas)
-  alert("Son "+cuotas+" pagos de "+valorCuota)
-
 }
+
+class ItemCarrito {
+    constructor(id, cantidad){
+        this.id = id;
+        this.cantidad = cantidad;
+    }
+}
+let carrito = []
+
+let productos = [new Producto("Curso de Guitarra", 9500, 1),
+                 new Producto("Curso de Bajo", 10000, 2),
+                 new Producto("Curso de Teclado", 11500, 3),
+                 new Producto("Clase individual de Guitarra", 850, 4),
+                 new Producto("Clase individual de Bajo", 950, 5),
+                 new Producto("Clase individual de Teclado", 1100, 6)]
+
+let total = 0
+let productoAcomprar = parseInt(prompt("Elige que deseas adquirir de nuestra tienda: 1-Curso de guitarra, 2-Curso de bajo, 3-Curso de teclado, 4-Clase individual de guitarra, 5-Clase individual de bajo, 6-Clase individual de teclado"))
+let continuarLaCompra = true
+
+carrito.push(new ItemCarrito(productoAcomprar,1))
+
+let productoSolicitado = productos.find(prod=>prod.id===productoAcomprar)
+
+if (productoSolicitado){
+    total = total + productoSolicitado.precio
+}
+else {
+    alert("Ingresa un producto existente: 1-Curso de guitarra, 2-Curso de bajo, 3-Curso de teclado, 4-Clase individual de guitarra, 5-Clase individual de bajo, 6-Clase individual de teclado ")
+}
+
+decision =  (parseInt(prompt("Algo más que desees agregar? 1.Si - 2.No")) ===1) ? true:false;
+while (decision === true){
+    productoAcomprar = parseInt(prompt("Elige que deseas adquirir de nuestra tienda: 1-Curso de guitarra, 2-Curso de bajo, 3-Curso de teclado, 4-Clase individual de guitarra, 5-Clase individual de bajo, 6-Clase individual de teclado"))
+    productoSolicitado = productos.find(prod=>prod.id===productoAcomprar)
+    let productoCarrito = carrito.findIndex(prod=>prod.id===productoAcomprar)
+    if (productoCarrito >=0){ 
+        carrito[productoCarrito].cantidad = carrito[productoCarrito].cantidad+1
+    } else {
+        carrito.push(new ItemCarrito(productoAcomprar,1))
+    } console.log(carrito)
+
+
+    // Saber si mi carrito ya tiene el producto
+    // Si no lo tiene, lo agrego al carrito con cantidad 1
+    //Si ya lo tiene, tengo que sumarle 1 a la cantidad actual
+
+
+    total = total + productoSolicitado.precio
+    decision =  (parseInt(prompt("Algo más que desees agregar? 1.Si - 2.No")) ===1) ? true:false;
+} 
+
+alert("El valor total de tu compra (SIN IVA) es de " + total);
+
+let valorTotalConIVA = precioConIVA(total);
+alert("El valor total de tu compra con IVA es de " + valorTotalConIVA);
+
+let cuotas = parseInt(prompt("En cuantas cuotas deseas pagar? Puede ser entre 1 y 6 cuotas"))
+while(cuotas <1 || cuotas >6){
+  cuotas = parseInt(prompt("En cuantas cuotas deseas pagar? Puede ser entre 1 y 6 cuotas"))
+}
+let valorCuota = precioCuota(valorTotalConIVA, cuotas)
+alert("Son "+cuotas+" pagos de "+valorCuota)
 
 // Valor del IVA 2022 = 22%
 function precioConIVA(valor) {
-  const IVA = valor * 0.22;
-  return valor + IVA;
+    const IVA = valor * 0.22;
+    return valor + IVA;
 }
-
+  
 function precioCuota(valor, cuotas) {
     return valor/cuotas
 }
 
-compra();
+
+
+
+
+
